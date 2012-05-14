@@ -1,0 +1,9 @@
+.git
+.idea
+*.iml
+target
+*.ipr
+*.iws
+release.properties
+pom.xml.releaseBackup
+*.jar
