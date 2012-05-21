@@ -1,0 +1,1 @@
+php main.php -z > logs\request_%DATE%.txt 2>&1

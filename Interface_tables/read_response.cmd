@@ -1,0 +1,1 @@
+php main.php -r > logs\response_%DATE%.txt 2>&1
