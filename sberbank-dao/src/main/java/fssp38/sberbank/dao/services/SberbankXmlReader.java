@@ -1,6 +1,7 @@
 package fssp38.sberbank.dao.services;
 
 import fssp38.sberbank.dao.beans.SberbankResponse;
+import fssp38.sberbank.dao.exceptions.EndDocumentException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -15,8 +16,7 @@ import java.util.List;
  * Date: 8/10/11
  * Time: 9:22 AM
  */
-public class SberbankXmlResponseParser extends DefaultHandler {
-    public static String filename = "f1290018.117";
+public class SberbankXmlReader extends DefaultHandler {
 
     SberbankResponse currentResponse;
     boolean isTextReady = false;
@@ -26,7 +26,7 @@ public class SberbankXmlResponseParser extends DefaultHandler {
 
     String previosReqId = "";
 
-    public SberbankXmlResponseParser(String depCode) {
+    public SberbankXmlReader(String depCode) {
         this.depCode = depCode;
     }
 
@@ -85,6 +85,7 @@ public class SberbankXmlResponseParser extends DefaultHandler {
         if (localName.equals("Response")) {
             onResponce(currentResponse);
             System.out.println("Все ответы в файле обработаны");
+            throw new EndDocumentException();
         }
     }
 

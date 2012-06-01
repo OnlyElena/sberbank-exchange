@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-	
-	<bean id="dataSource" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="Октябрьский" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
-        <property name="url" value="jdbc:firebirdsql:10.3.77.153/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.81.133/3052:ncore-fssp?lc_ctype=WIN1251"/>
         <property name="username" value="sysdba"/>
-        <property name="password" value="masterkey"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Иркутский-->
+    <bean id="11" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.53.133/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
     </bean>
 
     <bean id="testDao.dataSource" class="fssp38.sberbank.dao.TestDaoImp">
-        <property name="dataSource" ref="dataSource"/>
+        <property name="dataSource" ref="Октябрьский"/>
     </bean>
 
 </beans>

@@ -1,6 +1,8 @@
 package fssp38.sberbank.dao;
 
 import fssp38.sberbank.dao.beans.SberbankResponse;
+import fssp38.sberbank.dao.exceptions.FlowException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * User: Andrey V. Panov
@@ -29,11 +32,12 @@ public class ImportResponce {
 
     }
 
-    public void process(List<SberbankResponse> responses) {
+    public void process(List<SberbankResponse> responses) throws FlowException {
         Long genid = getNextSeqDocumentId();
-        String genuuid = getNextUUID();
+//        String genuuid = getNextUUID();
+        String genuuid = UUID.randomUUID().toString();
 
-        String id = "8123" + responses.get(0).getRequestId();
+        String id = "2511" + responses.get(0).getRequestId();
 
 
         String query =
@@ -66,11 +70,18 @@ public class ImportResponce {
 
         System.out.println("query: " + query);
 
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        ColumnMapRowMapper rowMapper = new ColumnMapRowMapper();
-        Map<String, Object> map = (Map<String, Object>) jdbcTemplate.queryForObject(query, rowMapper);
-        for (String s : map.keySet()) {
-            System.out.println(s + "\t" + map.get(s));
+        JdbcTemplate jdbcTemplate = null;
+        Map<String, Object> map = null;
+
+        try {
+            jdbcTemplate = new JdbcTemplate(dataSource);
+            ColumnMapRowMapper rowMapper = new ColumnMapRowMapper();
+            map = jdbcTemplate.queryForObject(query, rowMapper);
+//            for (String s : map.keySet()) {
+//                System.out.println(s + "\t" + map.get(s));
+//            }
+        } catch (EmptyResultDataAccessException e) {
+            throw new FlowException("На запросе №1 не получен результат. Запрос с таким ID не выполнялся:" + id);
         }
 
 
@@ -103,6 +114,14 @@ public class ImportResponce {
 
         jdbcTemplate.execute(query1);
 
+        String result_str;
+        int result = responses.get(0).getResult();
+        if (result == 0) {
+            result_str = "Счетов не найдено";
+        } else {
+            result_str = "Имеются счета, информация прилагается";
+        }
+
         String query2 = "INSERT INTO " +
                 "EXT_RESPONSE (" +
                 "ID," +
@@ -127,42 +146,18 @@ public class ImportResponce {
                 "'" + map.get("IP_NUM") + "'," +
                 "'" + map.get("REQ_NUMBER") + "'," +
                 "" + id + "," +
-                "'{$result_str}'" +
+                "'" + result_str + "'" +
                 ")";
 
         System.out.println("query2: " + query2);
         jdbcTemplate.execute(query2);
 
         for (SberbankResponse response : responses) {
+
+            String query3 = null;
+            String query4 = null;
+
             Long extInfoId = getNextExtInformationId();
-
-            String query3 = "INSERT INTO " +
-                    "EXT_INFORMATION (" +
-                    "ID," +
-                    "ACT_DATE," +
-                    "KIND_DATA_TYPE," +
-                    "ENTITY_NAME," +
-                    "EXTERNAL_KEY," +
-                    "ENTITY_BIRTHDATE," +
-                    "ENTITY_BIRTHYEAR," +
-                    "PROCEED," +
-                    "DOCUMENT_KEY," +
-                    "ENTITY_INN" +
-                    ") VALUES (" +
-                    "" + extInfoId + "," +
-                    "'" + response.getRequestDate() + "'," +
-                    "'09'," +
-                    "'" + map.get("DEBTOR_NAME") + "'," +
-                    "'" + genuuid + "'," +
-                    "'" + map.get("DEBTOR_BIRTHDATE") + "'," +
-                    "'" + map.get("DBTR_BORN_YEAR") + "'," +
-                    "0," +
-                    "'" + genuuid + "'," +
-                    "'" + map.get("DEBTOR_INN") + "'" +
-                    ")";
-
-            System.out.println("query3: " + query3);
-            jdbcTemplate.execute(query3);
 
             String currCode = "???";
             if (response.getAccountCurreny() != null) {
@@ -175,29 +170,107 @@ public class ImportResponce {
                 }
             }
 
-            String query4 = "INSERT INTO " +
-                    "EXT_AVAILABILITY_ACC_DATA (" +
-                    "ID," +
-                    "BIC_BANK," +
-                    "CURRENCY_CODE," +
-                    "ACC," +
-                    "BANK_NAME," +
-                    "SUMMA," +
-                    "DEPT_CODE," +
-                    "SUMMA_INFO" +
-                    ") VALUES (" +
-                    "" + extInfoId + "," +
-                    "'" + response.getOsbBIC() + "'," +
-                    "'" + currCode + "'," +
-                    "'" + response.getDebtorAccount().replaceAll("\\.", "") + "'," +
-                    "'" + response.getOsbName() + "'," +
-                    "" + response.getAccountBalance() + "," +
-                    "'" + response.getOsbNumber() + "'," +
-                    "'Остаток на счету " + response.getAccountBalance() + "'" + //длинна должна быть не более 99 символов
-                    ")";
+            if (response.getResult() == 0) {
+                //счетов не найдено
 
-            System.out.println("query4: " + query4);
-            jdbcTemplate.execute(query4);
+                query3 = "INSERT INTO " +
+                        "EXT_INFORMATION (" +
+                        "ID," +
+                        "ACT_DATE," +
+                        "KIND_DATA_TYPE," +
+                        "ENTITY_NAME," +
+                        "EXTERNAL_KEY," +
+                        "ENTITY_BIRTHDATE," +
+                        "ENTITY_BIRTHYEAR," +
+                        "PROCEED," +
+                        "DOCUMENT_KEY," +
+                        "ENTITY_INN" +
+                        ") VALUES (" +
+                        "" + extInfoId + "," +
+                        "'" + response.getRequestDate() + "'," +
+                        "'09'," +
+                        "'" + map.get("DEBTOR_NAME") + "'," +
+                        "'" + genuuid + "'," +
+                        "'" + map.get("DEBTOR_BIRTHDATE") + "'," +
+                        "'" + map.get("DBTR_BORN_YEAR") + "'," +
+                        "0," +
+                        "'" + genuuid + "'," +
+                        "'" + map.get("DEBTOR_INN") + "'" +
+                        ")";
+
+                query4 = "INSERT INTO " +
+                        "EXT_AVAILABILITY_ACC_DATA (" +
+                        "ID," +
+                        "BIC_BANK," +
+                        "CURRENCY_CODE," +
+                        "ACC," +
+                        "BANK_NAME," +
+                        "SUMMA," +
+                        "DEPT_CODE," +
+                        "SUMMA_INFO" +
+                        ") VALUES (" +
+                        "" + extInfoId + "," +
+                        "'" + response.getOsbBIC() + "'," +
+                        "'" + currCode + "'," +
+                        "''," +
+                        "'" + response.getOsbName() + "'," +
+                        "" + response.getAccountBalance() + "," +
+                        "'" + response.getOsbNumber() + "'," +
+                        "'Счетов не найдено'" + //длинна должна быть не более 99 символов
+                        ")";
+
+
+
+            } else {
+                query3 = "INSERT INTO " +
+                        "EXT_INFORMATION (" +
+                        "ID," +
+                        "ACT_DATE," +
+                        "KIND_DATA_TYPE," +
+                        "ENTITY_NAME," +
+                        "EXTERNAL_KEY," +
+                        "ENTITY_BIRTHDATE," +
+                        "ENTITY_BIRTHYEAR," +
+                        "PROCEED," +
+                        "DOCUMENT_KEY," +
+                        "ENTITY_INN" +
+                        ") VALUES (" +
+                        "" + extInfoId + "," +
+                        "'" + response.getRequestDate() + "'," +
+                        "'09'," +
+                        "'" + map.get("DEBTOR_NAME") + "'," +
+                        "'" + genuuid + "'," +
+                        "'" + map.get("DEBTOR_BIRTHDATE") + "'," +
+                        "'" + map.get("DBTR_BORN_YEAR") + "'," +
+                        "0," +
+                        "'" + genuuid + "'," +
+                        "'" + map.get("DEBTOR_INN") + "'" +
+                        ")";
+
+                query4 = "INSERT INTO " +
+                        "EXT_AVAILABILITY_ACC_DATA (" +
+                        "ID," +
+                        "BIC_BANK," +
+                        "CURRENCY_CODE," +
+                        "ACC," +
+                        "BANK_NAME," +
+                        "SUMMA," +
+                        "DEPT_CODE," +
+                        "SUMMA_INFO" +
+                        ") VALUES (" +
+                        "" + extInfoId + "," +
+                        "'" + response.getOsbBIC() + "'," +
+                        "'" + currCode + "'," +
+                        "'" + response.getDebtorAccount().replaceAll("\\.", "") + "'," +
+                        "'" + response.getOsbName() + "'," +
+                        "" + response.getAccountBalance() + "," +
+                        "'" + response.getOsbNumber() + "'," +
+                        "'Остаток на счету " + response.getAccountBalance() + "'" + //длинна должна быть не более 99 символов
+                        ")";
+
+                jdbcTemplate.execute(query3);
+                jdbcTemplate.execute(query4);
+            }
         }
 
     }

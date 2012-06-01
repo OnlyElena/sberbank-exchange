@@ -1,7 +1,9 @@
 package fssp38.sberbank.dao;
 
 import fssp38.sberbank.dao.beans.SberbankResponse;
-import fssp38.sberbank.dao.services.SberbankXmlResponseParser;
+import fssp38.sberbank.dao.exceptions.EndDocumentException;
+import fssp38.sberbank.dao.exceptions.FlowException;
+import fssp38.sberbank.dao.services.SberbankXmlReader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.xml.sax.InputSource;
@@ -25,11 +27,18 @@ import java.util.Map;
 public class Import {
     public static void main(String[] args) {
         Import im = new Import();
-        im.parseFile("/home/aware/Downloads/f0750018.471");
+        im.parseFile("/home/aware/Downloads/sberbank_report/f2350018.111");
     }
 
-    private void test1() {
+    Map<String, DataSource> dataSourceMap;
 
+    public Import() {
+        init();
+    }
+
+    private void init() {
+        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+        dataSourceMap = context.getBeansOfType(DataSource.class);
     }
 
     private void parseFile(String file) {
@@ -37,29 +46,28 @@ public class Import {
         try {
             InputSource src = new InputSource(new FileInputStream(file));
 
-            XMLReader reader = XMLReaderFactory.createXMLReader();
-            SberbankXmlResponseParser parser = new SberbankXmlResponseParser("23");
-            reader.setContentHandler(parser);
-            reader.parse(src);
+            SberbankXmlReader parser = null;
+            try {
+                XMLReader reader = XMLReaderFactory.createXMLReader();
+                parser = new SberbankXmlReader("11");
+                reader.setContentHandler(parser);
+                reader.parse(src);
+
+
+            } catch (EndDocumentException e) {
+                //достигли конец документа, все в порядке
+            }
 
             Hashtable<String, List<SberbankResponse>> responces = parser.getResponces();
+
             for (String s : responces.keySet()) {
                 System.out.println(s);
                 List<SberbankResponse> list = responces.get(s);
 
-                ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+                DataSource dataSource = dataSourceMap.get("Иркутский");
 
-                Map<String, DataSource> dataSources = context.getBeansOfType(DataSource.class);
-                for (String ss : dataSources.keySet()) {
-                    TestDao testDao = (TestDao) context.getBean("testDao." + ss);
-                    Dep dep = testDao.getDep();
-                    System.out.println("Подключение: " + dep.getName());
-
-                    ImportResponce importResponce = new ImportResponce(dataSources.get(ss));
-                    importResponce.process(list);
-                }
-
-                System.exit(-1);
+                ImportResponce importResponce = new ImportResponce(dataSource);
+                importResponce.process(list);
 
                 for (SberbankResponse response : list) {
                     System.out.println("\t" + response.toString());
@@ -67,16 +75,19 @@ public class Import {
             }
 
         } catch (SAXParseException spe) {
-//                StringBuffer sb = new StringBuffer(spe.toString());
-//                sb.append("\n Line number: " + spe.getLineNumber());
-//                sb.append("\nColumn number: " + spe.getColumnNumber());
-//                sb.append("\n Public ID: " + spe.getPublicId());
-//                sb.append("\n System ID: " + spe.getSystemId() + "\n");
-//                System.out.println(sb.toString());
+            spe.printStackTrace();
+            StringBuffer sb = new StringBuffer(spe.toString());
+            sb.append("\n Line number: " + spe.getLineNumber());
+            sb.append("\nColumn number: " + spe.getColumnNumber());
+            sb.append("\n Public ID: " + spe.getPublicId());
+            sb.append("\n System ID: " + spe.getSystemId() + "\n");
+            System.out.println(sb.toString());
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         } catch (SAXException e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
+        } catch (FlowException e) {
+            e.printStackTrace();
         }
 
 
