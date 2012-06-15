@@ -4,8 +4,11 @@ import fssp38.sberbank.dao.exceptions.FlowException;
 import fssp38.sberbank.dao.services.SberbankRequestService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.xml.sax.SAXException;
 
 import javax.sql.DataSource;
+import javax.xml.transform.TransformerConfigurationException;
+import java.io.FileNotFoundException;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -31,13 +34,13 @@ public class Export {
 
     private void init() {
         properties = new Hashtable<String, String>();
-        properties.put("agent_code", "СБЕРБАНК");
-        properties.put("agent_dept_code", "СБЕРБАНКИРК");
-        properties.put("agreement_code", "СБЕРБАНКСОГЛ");
+        properties.put("MVV_AGENT_CODE", "СБЕРБАНК");
+        properties.put("MVV_AGENT_DEPT_CODE", "СБЕРБАНКИРК");
+        properties.put("MVV_AGREEMENT_CODE", "СБЕРБАНКСОГЛ");
         properties.put("DEP_CODE", "25");
         properties.put("OUTPUT_DIRECTORY", "/home/aware/Downloads/sberbank_request");
-        properties.put("Октябрьский", "25");
-        properties.put("Иркутский", "11");
+//        properties.put("Октябрьский", "25");
+//        properties.put("Иркутский", "11");
 
 
         ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
@@ -53,6 +56,12 @@ public class Export {
                 SberbankRequestService it = new SberbankRequestService(dataSourceMap.get(s), properties);
                 it.offloadRequests();
             } catch (FlowException e) {
+                e.printStackTrace();
+            } catch (SAXException e) {
+                e.printStackTrace();
+            } catch (TransformerConfigurationException e) {
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
         }

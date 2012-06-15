@@ -16,11 +16,11 @@ public class SberbankResponse {
     String requestDate;
     String requestTime;
     String INN;
-    String OsbName;
-    String OsbAddress;
-    String OsbNumber;
-    String OsbPhoneNumber;
-    String OsbBIC;
+    String osbName;
+    String osbAddress;
+    String osbNumber;
+    String osbPhoneNumber;
+    String osbBIC;
     String debtorAccount;
     String accountCreateDate;
     String accountBalance;
@@ -108,43 +108,43 @@ public class SberbankResponse {
     }
 
     public String getOsbName() {
-        return OsbName;
+        return osbName;
     }
 
     public void setOsbName(String osbName) {
-        OsbName = osbName;
+        this.osbName = osbName;
     }
 
     public String getOsbAddress() {
-        return OsbAddress;
+        return osbAddress;
     }
 
     public void setOsbAddress(String osbAddress) {
-        OsbAddress = osbAddress;
+        this.osbAddress = osbAddress;
     }
 
     public String getOsbNumber() {
-        return OsbNumber;
+        return osbNumber;
     }
 
     public void setOsbNumber(String osbNumber) {
-        OsbNumber = osbNumber;
+        this.osbNumber = osbNumber;
     }
 
     public String getOsbPhoneNumber() {
-        return OsbPhoneNumber;
+        return osbPhoneNumber;
     }
 
     public void setOsbPhoneNumber(String osbPhoneNumber) {
-        OsbPhoneNumber = osbPhoneNumber;
+        this.osbPhoneNumber = osbPhoneNumber;
     }
 
     public String getOsbBIC() {
-        return OsbBIC;
+        return osbBIC;
     }
 
     public void setOsbBIC(String osbBIC) {
-        OsbBIC = osbBIC;
+        this.osbBIC = osbBIC;
     }
 
     public String getDebtorAccount() {
@@ -200,11 +200,11 @@ public class SberbankResponse {
                 ", requestDate='" + requestDate + '\'' +
                 ", requestTime='" + requestTime + '\'' +
                 ", INN='" + INN + '\'' +
-                ", OsbName='" + OsbName + '\'' +
-                ", OsbAddress='" + OsbAddress + '\'' +
-                ", OsbNumber='" + OsbNumber + '\'' +
-                ", OsbPhoneNumber='" + OsbPhoneNumber + '\'' +
-                ", OsbBIC='" + OsbBIC + '\'' +
+                ", osbName='" + osbName + '\'' +
+                ", osbAddress='" + osbAddress + '\'' +
+                ", osbNumber='" + osbNumber + '\'' +
+                ", osbPhoneNumber='" + osbPhoneNumber + '\'' +
+                ", osbBIC='" + osbBIC + '\'' +
                 ", debtorAccount='" + debtorAccount + '\'' +
                 ", accountCreateDate='" + accountCreateDate + '\'' +
                 ", accountBalance='" + accountBalance + '\'' +
@@ -212,4 +212,10 @@ public class SberbankResponse {
                 ", accountCurreny='" + accountCurreny + '\'' +
                 '}';
     }
+
+    public String toStringSber() {
+        return "| osbnumber=" + osbNumber +
+                "| accountCurreny=" + accountCurreny;
+    }
+
 }

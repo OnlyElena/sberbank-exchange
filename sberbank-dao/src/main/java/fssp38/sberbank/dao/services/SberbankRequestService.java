@@ -7,6 +7,7 @@ import org.xml.sax.SAXException;
 
 import javax.sql.DataSource;
 import javax.xml.transform.TransformerConfigurationException;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -25,6 +26,7 @@ public class SberbankRequestService {
     public static final SimpleDateFormat yyyymmdd = new SimpleDateFormat("yyyy.MM.dd");
 
     DataSource dataSource;
+    JdbcTemplate jdbcTemplate;
     String depCode;
     Hashtable<String, String> parameters;
     Hashtable<String, SberbankXmlWriter> xmlWriters;
@@ -42,47 +44,45 @@ public class SberbankRequestService {
     private void init() throws FlowException {
         String query = "SELECT DEPARTMENT, TERRITORY, DIV_NAME FROM OSP";
 
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        jdbcTemplate = new JdbcTemplate(dataSource);
         Map<String, Object> map = jdbcTemplate.queryForMap(query);
         depCode = map.get("DEPARTMENT").toString();
 
-        System.out.println("\nПодключение к БД: " + map.get("DIV_NAME"));
+        System.out.println("\nУспешное подключение к БД: " + map.get("DIV_NAME"));
 
         if (depCode == null) {
             throw new FlowException("Не удалось получить код отдела из БД");
         }
     }
 
-    public void offloadRequests() {
+    public void offloadRequests() throws TransformerConfigurationException, SAXException, FileNotFoundException, FlowException {
         initWhereCondition();
 
         List<String> packets = getPacketsNumbers();
 
-        try {
-            for (String packetId : packets) {
 
-                beforeNewPacketProcess(packetId);
+        for (String packetId : packets) {
 
-                fetchPackets(packetId);
-            }
-        } catch (Exception e) {
-            //нужно продумать атомарность в случае возникновения исключений
-            e.printStackTrace();
-            System.exit(-10);
+            openXmlWriter(packetId);
+
+            fetchPackets(packetId);
+
         }
+
 
         afterPacketsEnd();
 
-//        UPDATE EXT_REQUEST SET PROCESSED = 1 WHERE PACK_ID = {$pack['PACK_ID']}"))
-
+        for (String packetId : packets) {
+            jdbcTemplate.execute("UPDATE EXT_REQUEST SET PROCESSED = 1 WHERE PACK_ID = " + packetId);
+        }
 
     }
 
     private void initWhereCondition() {
         String whereArr[] = {
-                "MVV_AGREEMENT_CODE = '" + parameters.get("agreement_code") + "'",
-                "MVV_AGENT_CODE = '" + parameters.get("agent_code") + "'",
-                "MVV_AGENT_DEPT_CODE = '" + parameters.get("agent_dept_code") + "'",
+                "MVV_AGREEMENT_CODE = '" + parameters.get("MVV_AGREEMENT_CODE") + "'",
+                "MVV_AGENT_CODE = '" + parameters.get("MVV_AGENT_CODE") + "'",
+                "MVV_AGENT_DEPT_CODE = '" + parameters.get("MVV_AGENT_DEPT_CODE") + "'",
                 "PROCESSED = 0",
                 "ENTITY_TYPE IN (2, 71, 95, 96, 97)"
         };
@@ -148,20 +148,12 @@ public class SberbankRequestService {
                 where +
                 " AND PACK_ID = " + packetId + "";
 
-        System.out.println("QUERY: " + query);
+//        System.out.println("QUERY: " + query);
 
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+//        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(query);
 
         List<SberbankRequest> requests = new LinkedList<SberbankRequest>();
-
-//        System.out.println();
-//        for (Map<String, Object> row : rows) {
-//            for (String s : row.keySet()) {
-//                System.out.println(s + "\t" + row.get(s));
-//            }
-//        }
-
 
         for (Map<String, Object> row : rows) {
             SberbankRequest r = new SberbankRequest();
@@ -184,7 +176,7 @@ public class SberbankRequestService {
 
             r.setDebtorLastName(getString(row, "ENTT_SURNAME"));
             r.setDebtorFirstName(row.get("ENTT_FIRSTNAME").toString());
-            r.setDebtorSecondName(row.get("ENTT_PATRONYMIC").toString());
+            r.setDebtorSecondName(getString(row, "ENTT_PATRONYMIC"));
             r.setDebtorBirthYear(row.get("DBTR_BORN_YEAR").toString());
             r.setDebtorAddres(row.get("DEBTOR_ADDRESS").toString());
             r.setDebtorBirthDate(parseDate(row.get("DEBTOR_BIRTHDATE").toString()));
@@ -192,7 +184,7 @@ public class SberbankRequestService {
 
             requests.add(r);
 
-            onProcessRequest(packetId, r);
+            writeRequest(packetId, r);
 
             getString(row, "asdfs");
         }
@@ -245,13 +237,12 @@ public class SberbankRequestService {
      * @throws SAXException
      * @throws FileNotFoundException
      */
-    private void beforeNewPacketProcess(String packetId) throws FlowException, TransformerConfigurationException, SAXException, FileNotFoundException {
+    private void openXmlWriter(String packetId) throws FlowException, TransformerConfigurationException, SAXException, FileNotFoundException {
         System.out.println("Подготовка к обработке пакета: " + packetId);
-        SberbankXmlWriter xmlWriter;
 
         if (xmlWriters == null) xmlWriters = new Hashtable<String, SberbankXmlWriter>();
 
-        xmlWriter = xmlWriters.get(packetId);
+        SberbankXmlWriter xmlWriter = xmlWriters.get(packetId);
 
         if (xmlWriter == null) {
             xmlWriter = new SberbankXmlWriter(
@@ -269,12 +260,14 @@ public class SberbankRequestService {
             }
     }
 
-    private void onProcessRequest(String packetId, SberbankRequest r) {
+    private void writeRequest(String packetId, SberbankRequest r) {
+
         try {
             getRequestWriter(packetId).writeRequest(r);
         } catch (FlowException e) {
-            e.printStackTrace();
+            System.err.println("ОШИБКА: " + e.getMessage());
         }
+
     }
 
     private SberbankXmlWriter getRequestWriter(String packetId) {
@@ -320,6 +313,12 @@ public class SberbankRequestService {
     private String parseDate(java.sql.Date wrongDate) {
         if (wrongDate == null) return null;
         return ddmmyyyy.format(wrongDate);
+    }
+
+    public void deleteCreatedFiles() {
+        for (SberbankXmlWriter writer : xmlWriters.values()) {
+            new File(writer.outputDirectory + writer.filename).delete();
+        }
     }
 
 }

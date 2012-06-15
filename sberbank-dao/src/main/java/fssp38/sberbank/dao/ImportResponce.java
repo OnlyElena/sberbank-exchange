@@ -173,54 +173,6 @@ public class ImportResponce {
             if (response.getResult() == 0) {
                 //счетов не найдено
 
-                query3 = "INSERT INTO " +
-                        "EXT_INFORMATION (" +
-                        "ID," +
-                        "ACT_DATE," +
-                        "KIND_DATA_TYPE," +
-                        "ENTITY_NAME," +
-                        "EXTERNAL_KEY," +
-                        "ENTITY_BIRTHDATE," +
-                        "ENTITY_BIRTHYEAR," +
-                        "PROCEED," +
-                        "DOCUMENT_KEY," +
-                        "ENTITY_INN" +
-                        ") VALUES (" +
-                        "" + extInfoId + "," +
-                        "'" + response.getRequestDate() + "'," +
-                        "'09'," +
-                        "'" + map.get("DEBTOR_NAME") + "'," +
-                        "'" + genuuid + "'," +
-                        "'" + map.get("DEBTOR_BIRTHDATE") + "'," +
-                        "'" + map.get("DBTR_BORN_YEAR") + "'," +
-                        "0," +
-                        "'" + genuuid + "'," +
-                        "'" + map.get("DEBTOR_INN") + "'" +
-                        ")";
-
-                query4 = "INSERT INTO " +
-                        "EXT_AVAILABILITY_ACC_DATA (" +
-                        "ID," +
-                        "BIC_BANK," +
-                        "CURRENCY_CODE," +
-                        "ACC," +
-                        "BANK_NAME," +
-                        "SUMMA," +
-                        "DEPT_CODE," +
-                        "SUMMA_INFO" +
-                        ") VALUES (" +
-                        "" + extInfoId + "," +
-                        "'" + response.getOsbBIC() + "'," +
-                        "'" + currCode + "'," +
-                        "''," +
-                        "'" + response.getOsbName() + "'," +
-                        "" + response.getAccountBalance() + "," +
-                        "'" + response.getOsbNumber() + "'," +
-                        "'Счетов не найдено'" + //длинна должна быть не более 99 символов
-                        ")";
-
-
-
             } else {
                 query3 = "INSERT INTO " +
                         "EXT_INFORMATION (" +

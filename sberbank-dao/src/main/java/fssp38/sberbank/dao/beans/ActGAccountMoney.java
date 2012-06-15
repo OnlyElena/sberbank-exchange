@@ -13,6 +13,11 @@ public class ActGAccountMoney {
     /*ИД документа в БД*/
     Long id;
 
+    String barcode;
+
+    /*2 - взыскание, 1 - арест, 3 - снятие ареста, 5 - прекращение ИД*/
+    String acttype = "2";
+
     /*Номер постановления об обращении взыскаяния*/
     String actNumber;
 
@@ -22,7 +27,7 @@ public class ActGAccountMoney {
     /*Номер ИП*/
     String execProcNumber;
 
-    /*Дата возбуждения*/
+    /*Дата возбуждения ИП*/
     String execProcDate;
 
     /*Очередность взыскания*/
@@ -56,12 +61,15 @@ public class ActGAccountMoney {
     String accountNumber;
 
     /*Должник*/
-    String debtorFirstName;
-    String debtorLastName;
-    String debtorSecondName;
+    String debtorFirstName; //Имя
+    String debtorLastName; //Фамилия
+    String debtorSecondName; //Отчество
 
     /*Место рождения должника*/
     String debtorBornAddres;
+
+    /*прописка должника*/
+    String debtorAddres;
 
     /*Год рождения должника*/
     String debtorBirthYear;
@@ -72,6 +80,22 @@ public class ActGAccountMoney {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
+    }
+
+    public String getActtype() {
+        return acttype;
+    }
+
+    public void setActtype(String acttype) {
+        this.acttype = acttype;
     }
 
     public String getActNumber() {
@@ -226,31 +250,42 @@ public class ActGAccountMoney {
         this.debtorBirthYear = debtorBirthYear;
     }
 
+    public String getDebtorAddres() {
+        return debtorAddres;
+    }
+
+    public void setDebtorAddres(String debtorAddres) {
+        this.debtorAddres = debtorAddres;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("ActGAccountMoney");
-        sb.append("{id=").append(id);
-        sb.append(", actNumber='").append(actNumber).append('\'');
-        sb.append(", actDate='").append(actDate).append('\'');
-        sb.append(", execProcNumber='").append(execProcNumber).append('\'');
-        sb.append(", execProcDate='").append(execProcDate).append('\'');
-        sb.append(", priority=").append(priority);
-        sb.append(", execActNum='").append(execActNum).append('\'');
-        sb.append(", execActDate='").append(execActDate).append('\'');
-        sb.append(", execActInitial='").append(execActInitial).append('\'');
-        sb.append(", execActInitialAddr='").append(execActInitialAddr).append('\'');
-        sb.append(", bailiff='").append(bailiff).append('\'');
-        sb.append(", summ='").append(summ).append('\'');
-        sb.append(", creditorName='").append(creditorName).append('\'');
-        sb.append(", creditorAddress='").append(creditorAddress).append('\'');
-        sb.append(", accountNumber='").append(accountNumber).append('\'');
-        sb.append(", debtorFirstName='").append(debtorFirstName).append('\'');
-        sb.append(", debtorLastName='").append(debtorLastName).append('\'');
-        sb.append(", debtorSecondName='").append(debtorSecondName).append('\'');
-        sb.append(", debtorBornAddres='").append(debtorBornAddres).append('\'');
-        sb.append(", debtorBirthYear='").append(debtorBirthYear).append('\'');
-        sb.append('}');
+
+        sb.append("| id=").append(id);
+        sb.append("| barcode=").append(barcode);
+        sb.append("| actype=").append(acttype);
+//        sb.append("| actNumber=").append(actNumber);
+        sb.append("| actDate=").append(actDate);
+        sb.append("| execProcNumber=").append(execProcNumber);
+        sb.append("| execProcDate=").append(execProcDate);
+        sb.append("| priority=").append(priority);
+        sb.append("| execActNum=").append(execActNum);
+        sb.append("| execActDate=").append(execActDate);
+        sb.append("| execActInitial=").append(execActInitial);
+        sb.append("| execActInitialAddr=").append(execActInitialAddr);
+        sb.append("| bailiff=").append(bailiff);
+        sb.append("| summ=").append(summ);
+        sb.append("| creditorName=").append(creditorName);
+        sb.append("| creditorAddress=").append(creditorAddress);
+        sb.append("| accountNumber=").append(accountNumber);
+        sb.append("| debtorFirstName=").append(debtorFirstName);
+        sb.append("| debtorLastName=").append(debtorLastName);
+        sb.append("| debtorSecondName=").append(debtorSecondName);
+        sb.append("| debtorBornAddres=").append(debtorBornAddres);
+        sb.append("| debtorAddres=").append(debtorAddres);
+        sb.append("| debtorBirthYear=").append(debtorBirthYear);
+
         return sb.toString();
     }
 }

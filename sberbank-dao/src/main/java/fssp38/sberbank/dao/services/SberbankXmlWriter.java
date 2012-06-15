@@ -242,7 +242,10 @@ public class SberbankXmlWriter {
 //            buff.append("Не указано место рождения должника\n");
 //        }
 
-        if (buff.length() > 0) throw new FlowException(buff.toString());
+        if (buff.length() > 0) {
+            buff.append("Номер ИП: "+z.getExecProcNum());
+            throw new FlowException(buff.toString());
+        }
     }
 
     private static boolean isNull(String obj) {

@@ -3,7 +3,8 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="Октябрьский" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+    <!--Октябрьский-->
+    <bean id="25" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
         <property name="url" value="jdbc:firebirdsql:10.38.81.133/3052:ncore-fssp?lc_ctype=WIN1251"/>
         <property name="username" value="sysdba"/>
@@ -18,8 +19,8 @@
         <property name="password" value="aissp038"/>
     </bean>
 
-    <bean id="testDao.dataSource" class="fssp38.sberbank.dao.TestDaoImp">
-        <property name="dataSource" ref="Октябрьский"/>
-    </bean>
+    <!--<bean id="testDao.dataSource" class="fssp38.sberbank.dao.TestDaoImp">-->
+        <!--<property name="dataSource" ref="Октябрьский"/>-->
+    <!--</bean>-->
 
 </beans>
