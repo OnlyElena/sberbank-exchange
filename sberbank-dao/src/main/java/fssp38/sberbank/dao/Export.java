@@ -18,6 +18,7 @@ import java.util.Map;
  * Date: 5/16/12
  * Time: 5:24 PM
  */
+@Deprecated
 public class Export {
     public static void main(String[] args) {
         Export export = new Export();

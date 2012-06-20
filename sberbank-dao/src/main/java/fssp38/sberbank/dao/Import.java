@@ -24,6 +24,7 @@ import java.util.Map;
  * Date: 5/17/12
  * Time: 11:21 AM
  */
+@Deprecated
 public class Import {
     public static void main(String[] args) {
         Import im = new Import();
@@ -49,7 +50,7 @@ public class Import {
             SberbankXmlReader parser = null;
             try {
                 XMLReader reader = XMLReaderFactory.createXMLReader();
-                parser = new SberbankXmlReader("11");
+                parser = new SberbankXmlReader();
                 reader.setContentHandler(parser);
                 reader.parse(src);
 
@@ -66,8 +67,8 @@ public class Import {
 
                 DataSource dataSource = dataSourceMap.get("Иркутский");
 
-                ImportResponce importResponce = new ImportResponce(dataSource);
-                importResponce.process(list);
+                ResponceService responceService = new ResponceService(dataSource);
+                responceService.process(list, "25","11");
 
                 for (SberbankResponse response : list) {
                     System.out.println("\t" + response.toString());

@@ -22,18 +22,18 @@ public class SberbankXmlReader extends DefaultHandler {
     boolean isTextReady = false;
     F field = F.unknown;
 
-    String depCode;
+//    String depCode;
 
     String previosReqId = "";
 
-    public SberbankXmlReader(String depCode) {
-        this.depCode = depCode;
+    public SberbankXmlReader() {
+//        this.depCode = depCode;
     }
 
     @Override
     public void startDocument() throws SAXException {
         super.startDocument();
-        System.out.println("Start document " + depCode);
+//        System.out.println("Start document " + depCode);
     }
 
     @Override

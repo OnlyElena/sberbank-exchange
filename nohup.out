@@ -1,0 +1,7 @@
+tint2 : another systray is running pid=2103
+tint2 : nb monitor 1, nb monitor used 1, nb desktop 1
+XIO:  fatal IO error 11 (Resource temporarily unavailable) on X server ":0"
+      after 25 requests (25 known processed) with 0 events remaining.
+real transparency on... depth: 32
+xRandr: Found crtc's: 2
+xRandr: Linking output VGA1 with crtc 0

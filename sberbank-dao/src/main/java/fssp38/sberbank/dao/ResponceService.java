@@ -19,7 +19,7 @@ import java.util.UUID;
  * Date: 5/17/12
  * Time: 11:22 AM
  */
-public class ImportResponce {
+public class ResponceService {
 
     DataSource dataSource;
 
@@ -27,17 +27,18 @@ public class ImportResponce {
     String agent_dept_code = "СБЕРБАНКИРК";
     String agreement_code = "СБЕРБАНКСОГЛ";
 
-    public ImportResponce(DataSource dataSource) {
+    public ResponceService(DataSource dataSource) {
         this.dataSource = dataSource;
 
     }
 
-    public void process(List<SberbankResponse> responses) throws FlowException {
+    public void process(List<SberbankResponse> responses, String territory, String depCode) throws FlowException {
         Long genid = getNextSeqDocumentId();
 //        String genuuid = getNextUUID();
         String genuuid = UUID.randomUUID().toString();
 
-        String id = "2511" + responses.get(0).getRequestId();
+        //составляем ИД запроса.
+        String id = territory + depCode + responses.get(0).getRequestId();
 
 
         String query =

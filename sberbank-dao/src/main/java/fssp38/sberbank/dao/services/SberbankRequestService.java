@@ -60,7 +60,6 @@ public class SberbankRequestService {
 
         List<String> packets = getPacketsNumbers();
 
-
         for (String packetId : packets) {
 
             openXmlWriter(packetId);
@@ -171,15 +170,16 @@ public class SberbankRequestService {
             r.setHeadBailiff(row.get("H_PRISTAV").toString());
             r.setExecProcNum(row.get("IP_NUM").toString());
             r.setSumm(getBigDecimal(row, "IP_SUM"));
-            r.setExecActNum(row.get("ID_NUMBER").toString());
+            r.setExecActNum(getString(row, "ID_NUMBER"));
             r.setExecActDate(parseDate(getSqlDate(row, "ID_DATE")));
 
             r.setDebtorLastName(getString(row, "ENTT_SURNAME"));
-            r.setDebtorFirstName(row.get("ENTT_FIRSTNAME").toString());
+            r.setDebtorFirstName(getString(row, "ENTT_FIRSTNAME"));
             r.setDebtorSecondName(getString(row, "ENTT_PATRONYMIC"));
-            r.setDebtorBirthYear(row.get("DBTR_BORN_YEAR").toString());
+            r.setDebtorBirthYear(getInteger(row, "DBTR_BORN_YEAR"));
             r.setDebtorAddres(row.get("DEBTOR_ADDRESS").toString());
-            r.setDebtorBirthDate(parseDate(row.get("DEBTOR_BIRTHDATE").toString()));
+//            r.setDebtorBirthDate(parseDate(row.get("DEBTOR_BIRTHDATE").toString()));
+            r.setDebtorBirthDate(parseDate(getSqlDate(row, "DEBTOR_BIRTHDATE")));
             r.setDebtorBornAddres(getNN(row.get("DEBTOR_BIRTHPLACE")));
 
             requests.add(r);
@@ -187,6 +187,18 @@ public class SberbankRequestService {
             writeRequest(packetId, r);
 
             getString(row, "asdfs");
+        }
+    }
+
+    private String getInteger(Map<String, Object> row, String filedName) {
+        Object o = row.get(filedName);
+        if (o == null) return null;
+
+        if (o instanceof Integer) {
+            return o.toString();
+        } else {
+            System.err.println("Field: " + filedName + ", are not Integer type. Actual type: " + o.getClass());
+            return o.toString();
         }
     }
 

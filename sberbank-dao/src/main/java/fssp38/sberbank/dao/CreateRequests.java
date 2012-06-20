@@ -48,8 +48,8 @@ public class CreateRequests {
 
             } catch (Exception e) {
                 //в случае возникновения исключительной ситуации, удаляем сформированные файлы
-                service.deleteCreatedFiles();
                 e.printStackTrace();
+                service.deleteCreatedFiles();
             }
 
         }
