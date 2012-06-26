@@ -112,7 +112,7 @@ public class ImportResponse {
         File[] files = new File(path).listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File file, String s) {
-                return s.matches("^f[0-9]{3}0018.[0-9]{3}");
+                return s.matches("^f[0-9]{3}0018.[0-9a-f]{3}");
             }
         });
 

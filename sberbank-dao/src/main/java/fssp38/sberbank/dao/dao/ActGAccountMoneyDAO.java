@@ -50,6 +50,7 @@ public class ActGAccountMoneyDAO {
                 "    entity.entt_patronymic," +
                 "    did.id_dbtr_bornadr," +
                 "    did.dbtr_born_year, " +
+                "    did.id_dbtr_born, " +
                 "    o_ip.id_dbtr_adr " + /*прописка должника*/
                 " from" +
                 "    document d" +
@@ -96,6 +97,7 @@ public class ActGAccountMoneyDAO {
                 act.setDebtorBornAddres(rs.getString("id_dbtr_bornadr"));
                 act.setDebtorAddres(rs.getString("id_dbtr_adr"));
                 act.setDebtorBirthYear(rs.getString("dbtr_born_year"));
+                act.setDebtorBirth(getDateDDMMYYYY(rs.getDate("id_dbtr_born")));
 
                 return act;
             }

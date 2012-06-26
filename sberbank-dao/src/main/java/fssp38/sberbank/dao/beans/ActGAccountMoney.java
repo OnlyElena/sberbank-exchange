@@ -74,6 +74,8 @@ public class ActGAccountMoney {
     /*Год рождения должника*/
     String debtorBirthYear;
 
+    String debtorBirth;
+
     public Long getId() {
         return id;
     }
@@ -258,6 +260,14 @@ public class ActGAccountMoney {
         this.debtorAddres = debtorAddres;
     }
 
+    public String getDebtorBirth() {
+        return debtorBirth;
+    }
+
+    public void setDebtorBirth(String debtorBirth) {
+        this.debtorBirth = debtorBirth;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
@@ -265,7 +275,7 @@ public class ActGAccountMoney {
         sb.append("| id=").append(id);
         sb.append("| barcode=").append(barcode);
         sb.append("| actype=").append(acttype);
-//        sb.append("| actNumber=").append(actNumber);
+        sb.append("| actNumber=").append(actNumber);
         sb.append("| actDate=").append(actDate);
         sb.append("| execProcNumber=").append(execProcNumber);
         sb.append("| execProcDate=").append(execProcDate);
@@ -285,6 +295,7 @@ public class ActGAccountMoney {
         sb.append("| debtorBornAddres=").append(debtorBornAddres);
         sb.append("| debtorAddres=").append(debtorAddres);
         sb.append("| debtorBirthYear=").append(debtorBirthYear);
+        sb.append("| debtorBirth=").append(debtorBirth);
 
         return sb.toString();
     }

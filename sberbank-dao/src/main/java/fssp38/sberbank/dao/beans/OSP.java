@@ -34,6 +34,8 @@ public class OSP {
 
     String address;
 
+    String orfkKod;
+
     public String getTerritory() {
         return territory;
     }
@@ -55,6 +57,17 @@ public class OSP {
     }
 
     public void setName(String name) {
+        //заменяем длинные названия, на короткие, где это не сделано в отделах
+        if (name != null) {
+            name = name.replace("УФССП России по Иркутской области", "");
+            name = name.replace("УФССП по Иркутской области", "");
+            name = name.replace("Управления Федеральной службы судебных приставов по Иркутской области", "");
+            name = name.replace("районный отдел судебных приставов", "РОСП");
+            name = name.replace("отдел судебных приставов", "ОСП");
+            name = name.trim();
+        } else {
+            this.name = null;
+        }
         this.name = name;
     }
 
@@ -138,6 +151,14 @@ public class OSP {
         this.address = address;
     }
 
+    public String getOrfkKod() {
+        return orfkKod;
+    }
+
+    public void setOrfkKod(String orfkKod) {
+        this.orfkKod = orfkKod;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
@@ -154,6 +175,9 @@ public class OSP {
         sb.append("| account=").append(account);
         sb.append("| receivTitle=").append(receivTitle);
         sb.append("| address=").append(address);
+        sb.append("| kbk=null");
+        sb.append("| bankBranch=null");
+        sb.append("| bankAgency=null");
 
         return sb.toString();
     }

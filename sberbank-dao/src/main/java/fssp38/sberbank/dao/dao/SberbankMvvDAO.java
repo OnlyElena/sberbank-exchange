@@ -64,7 +64,7 @@ public class SberbankMvvDAO {
             return null;
         }
 
-        System.out.println(sql);
+//        System.out.println(sql);
         return sberbankResponse;
     }
 }

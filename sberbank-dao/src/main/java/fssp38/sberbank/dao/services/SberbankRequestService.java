@@ -62,17 +62,18 @@ public class SberbankRequestService {
 
         for (String packetId : packets) {
 
-            openXmlWriter(packetId);
+            SberbankXmlWriter sberbankXmlWriter = openXmlWriter(packetId);
 
-            fetchPackets(packetId);
+            //прерываем обработку, если достигли лимит файлов для запросов
+            if (sberbankXmlWriter != null) {
 
-        }
+                fetchPackets(packetId);
 
+                sberbankXmlWriter.close();
 
-        afterPacketsEnd();
+                jdbcTemplate.execute("UPDATE EXT_REQUEST SET PROCESSED = 1 WHERE PACK_ID = " + packetId);
+            }
 
-        for (String packetId : packets) {
-            jdbcTemplate.execute("UPDATE EXT_REQUEST SET PROCESSED = 1 WHERE PACK_ID = " + packetId);
         }
 
     }
@@ -177,7 +178,7 @@ public class SberbankRequestService {
             r.setDebtorFirstName(getString(row, "ENTT_FIRSTNAME"));
             r.setDebtorSecondName(getString(row, "ENTT_PATRONYMIC"));
             r.setDebtorBirthYear(getInteger(row, "DBTR_BORN_YEAR"));
-            r.setDebtorAddres(row.get("DEBTOR_ADDRESS").toString());
+            r.setDebtorAddres(getString(row, "DEBTOR_ADDRESS"));
 //            r.setDebtorBirthDate(parseDate(row.get("DEBTOR_BIRTHDATE").toString()));
             r.setDebtorBirthDate(parseDate(getSqlDate(row, "DEBTOR_BIRTHDATE")));
             r.setDebtorBornAddres(getNN(row.get("DEBTOR_BIRTHPLACE")));
@@ -249,27 +250,25 @@ public class SberbankRequestService {
      * @throws SAXException
      * @throws FileNotFoundException
      */
-    private void openXmlWriter(String packetId) throws FlowException, TransformerConfigurationException, SAXException, FileNotFoundException {
-        System.out.println("Подготовка к обработке пакета: " + packetId);
+    private SberbankXmlWriter openXmlWriter(String packetId) throws FlowException, TransformerConfigurationException, SAXException, FileNotFoundException {
 
         if (xmlWriters == null) xmlWriters = new Hashtable<String, SberbankXmlWriter>();
 
         SberbankXmlWriter xmlWriter = xmlWriters.get(packetId);
 
         if (xmlWriter == null) {
+            String nextSberbankFileName = getNextSberbankFileName(xmlWriters.size() + 1, depCode);
+            if (nextSberbankFileName == null) return null;
+
             xmlWriter = new SberbankXmlWriter(
                     parameters.get("OUTPUT_DIRECTORY"),
-                    getNextSberbankFileName(xmlWriters.size() + 1, depCode));
+                    nextSberbankFileName);
             xmlWriters.put(packetId, xmlWriter);
         }
-    }
 
-    private void afterPacketsEnd() {
-        //закрываем все файлы
-        if (xmlWriters != null)
-            for (SberbankXmlWriter writer : xmlWriters.values()) {
-                writer.close();
-            }
+        System.out.println("Подготовка к обработке пакета: " + packetId);
+
+        return xmlWriter;
     }
 
     private void writeRequest(String packetId, SberbankRequest r) {
@@ -291,7 +290,9 @@ public class SberbankRequestService {
      * @param depCode   //код отдела
      * @return имя файла запроса
      */
-    private String getNextSberbankFileName(int fileCount, String depCode) {
+    private String getNextSberbankFileName(int fileCount, String depCode) throws FlowException {
+        if (fileCount >= 16) return null; //достигнут лимит файлов для отправки
+
         Calendar inst = Calendar.getInstance();
         String day = new DecimalFormat("00").format(inst.get(Calendar.DAY_OF_MONTH));
         String month = Integer.toHexString(inst.get(Calendar.MONTH) + 1);

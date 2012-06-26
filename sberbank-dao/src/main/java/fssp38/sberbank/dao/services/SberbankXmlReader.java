@@ -65,6 +65,8 @@ public class SberbankXmlReader extends DefaultHandler {
     Hashtable<String, List<SberbankResponse>> responces = new Hashtable<String, List<SberbankResponse>>();
 
     public void onResponce(SberbankResponse response) {
+        if (response == null) return;
+
         String id = response.getRequestId();
         List<SberbankResponse> list = responces.get(id);
         if (list == null) {

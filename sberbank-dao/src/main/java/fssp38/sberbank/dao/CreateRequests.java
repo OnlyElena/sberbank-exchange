@@ -49,7 +49,8 @@ public class CreateRequests {
             } catch (Exception e) {
                 //в случае возникновения исключительной ситуации, удаляем сформированные файлы
                 e.printStackTrace();
-                service.deleteCreatedFiles();
+                if (service != null)
+                    service.deleteCreatedFiles();
             }
 
         }

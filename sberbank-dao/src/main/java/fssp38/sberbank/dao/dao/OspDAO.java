@@ -29,6 +29,16 @@ public class OspDAO {
         return jdbcTemplate.queryForObject(sql, new RowMapper<OSP>() {
             @Override
             public OSP mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+//                int columnCount = rs.getMetaData().getColumnCount();
+//                for (int i = 1; i < columnCount; i++) {
+//                    String columnName = rs.getMetaData().getColumnName(i);
+//                    System.out.println(columnName + "\t" + rs.getString(i));
+//                }
+
+                System.out.println("DIV_NAME = " + rs.getString("DIV_NAME"));
+
+
                 OSP osp = new OSP();
 
                 osp.setName(rs.getString("DIV_NAME"));
@@ -42,8 +52,9 @@ public class OspDAO {
                 osp.setOkato(rs.getString("DIV_RECV_OKATO"));
                 osp.setAccount(rs.getString("DIV_RECV_CNT"));
                 osp.setLs(rs.getString("LS"));
-                osp.setReceivTitle(rs.getString("DIV_RECV_NAME"));
                 osp.setAddress(rs.getString("DIV_ADR"));
+                osp.setOrfkKod(rs.getString("ORFK_KOD").substring(2));
+                osp.setReceivTitle("УФК по Иркутской области (ОФК " + osp.getOrfkKod() + ", " + osp.getName() + " УФССП России по Ирк.области)");
 
                 return osp;
             }
