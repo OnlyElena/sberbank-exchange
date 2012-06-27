@@ -3,9 +3,10 @@ package fssp38.sberbank.dao;
 import fssp38.sberbank.dao.beans.SberbankResponse;
 import fssp38.sberbank.dao.exceptions.EndDocumentException;
 import fssp38.sberbank.dao.exceptions.FlowException;
+import fssp38.sberbank.dao.services.Config;
 import fssp38.sberbank.dao.services.SberbankXmlReader;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -27,7 +28,7 @@ public class ImportResponse {
         new ImportResponse();
     }
 
-    Hashtable<String, String> properties;
+    Map<String, String> properties;
 
 
     public ImportResponse() {
@@ -36,7 +37,7 @@ public class ImportResponse {
 
     private void process() {
         properties = getProperties();
-        Map<String, DataSource> dataSources = getDataSources("beans.xml");
+        Map<String, DataSource> dataSources = getDataSources("exProd.xml");
 
         File[] files = getResponseFiles();
 
@@ -120,22 +121,24 @@ public class ImportResponse {
     }
 
 
-    private Hashtable<String, String> getProperties() {
-        Hashtable<String, String> properties;
-        properties = new Hashtable<String, String>();
-        properties.put("MVV_AGENT_CODE", "СБЕРБАНК");
-        properties.put("MVV_AGENT_DEPT_CODE", "СБЕРБАНКИРК");
-        properties.put("MVV_AGREEMENT_CODE", "СБЕРБАНКСОГЛ");
-//        properties.put("DEP_CODE", "25");
-        properties.put("TERRITORY", "25");
-        properties.put("OUTPUT_DIRECTORY", "/home/aware/Downloads/sberbank_request/");
-        properties.put("INPUT_DIRECTORY", "/home/aware/Downloads/sberbank_report/");
+    private Map<String, String> getProperties() {
+        return Config.getProperties();
 
-        return properties;
+//        Hashtable<String, String> properties;
+//        properties = new Hashtable<String, String>();
+//        properties.put("MVV_AGENT_CODE", "СБЕРБАНК");
+//        properties.put("MVV_AGENT_DEPT_CODE", "СБЕРБАНКИРК");
+//        properties.put("MVV_AGREEMENT_CODE", "СБЕРБАНКСОГЛ");
+////        properties.put("DEP_CODE", "25");
+//        properties.put("TERRITORY", "25");
+//        properties.put("OUTPUT_DIRECTORY", "/home/aware/Downloads/sberbank_request/");
+//        properties.put("INPUT_DIRECTORY", "/home/aware/Downloads/sberbank_report/");
+//
+//        return properties;
     }
 
     private Map<String, DataSource> getDataSources(String configFile) {
-        ApplicationContext context = new ClassPathXmlApplicationContext(configFile);
+        ApplicationContext context = new FileSystemXmlApplicationContext(configFile);
         return context.getBeansOfType(DataSource.class);
     }
 

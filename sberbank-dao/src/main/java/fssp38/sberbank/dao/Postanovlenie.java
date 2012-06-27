@@ -6,8 +6,10 @@ import fssp38.sberbank.dao.beans.SberbankResponse;
 import fssp38.sberbank.dao.dao.ActGAccountMoneyDAO;
 import fssp38.sberbank.dao.dao.OspDAO;
 import fssp38.sberbank.dao.dao.SberbankMvvDAO;
+import fssp38.sberbank.dao.services.Config;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import javax.sql.DataSource;
 import java.io.FileOutputStream;
@@ -29,7 +31,8 @@ public class Postanovlenie implements Runnable {
 
     public static void main(String[] args) throws IOException {
         Map<String, DataSource> dataSourceMap;
-        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+//        ApplicationContext context = new ClassPathXmlApplicationContext("./beans.xml");
+        ApplicationContext context = new FileSystemXmlApplicationContext("exProd.xml");
         dataSourceMap = context.getBeansOfType(DataSource.class);
 
         for (String depCode : dataSourceMap.keySet()) {
@@ -60,7 +63,7 @@ public class Postanovlenie implements Runnable {
         try {
             sql1(depCode, dataSource);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Department: " + e.getMessage());
         }
 
         long l = (System.currentTimeMillis() - start) / 1000 / 60;
@@ -70,8 +73,9 @@ public class Postanovlenie implements Runnable {
     private void sql1(String depCode, DataSource dataSource) throws IOException {
 
         String nextSberbankFileName = getNextSberbankFileName(1, depCode);
+        String directory = Config.getProperties().get("OUTPUT_DIRECTORY");
 
-        OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(nextSberbankFileName), Charset.forName("UTF-8"));
+        OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(directory + nextSberbankFileName), Charset.forName("UTF-8"));
 
         ActGAccountMoneyDAO actGAccountMoneyDAO = new ActGAccountMoneyDAO(dataSource);
         OspDAO ospDAO = new OspDAO(dataSource);
@@ -80,7 +84,8 @@ public class Postanovlenie implements Runnable {
         OSP osp = ospDAO.getOsp();
 
 
-        List<ActGAccountMoney> actGAccountMoneyList = actGAccountMoneyDAO.getAll();
+        Long lastId = Config.getLastId(depCode);
+        List<ActGAccountMoney> actGAccountMoneyList = actGAccountMoneyDAO.getAll(lastId);
 
         for (ActGAccountMoney gAccountMoney : actGAccountMoneyList) {
             SberbankResponse accountInfo = sberbankMvvDAO.getAccountInfo(gAccountMoney.getAccountNumber());
@@ -99,10 +104,16 @@ public class Postanovlenie implements Runnable {
             out.write(accountInfo.toStringSber());
 
             out.write("\n");
+
+            //хотя он всегда должен возрастать?!
+            if (gAccountMoney.getId() > lastId) lastId = gAccountMoney.getId();
         }
 
         out.flush();
         out.close();
+        System.out.println("Write file: " + directory + nextSberbankFileName);
+
+        Config.setLastId(depCode, lastId);
     }
 
     /**

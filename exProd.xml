@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--Аларский-->
+    <bean id="01" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.33.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Ангарский-->
+    <bean id="02" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.34.34/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Балаганский-->
+    <bean id="03" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.37.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Баяндаевский-->
+    <bean id="04" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.39.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Бодайбинский-->
+    <bean id="05" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.41.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Братский-->
+    <bean id="07" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.44.34/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Жигаловский-->
+    <bean id="08" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.47.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Заларинский-->
+    <bean id="09" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.49.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Зиминский-->
+    <bean id="10" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.51.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Иркутский-->
+    <bean id="11" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.53.133/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Казачинско-Ленский-->
+    <bean id="12" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.55.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Катангский-->
+    <bean id="13" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.57.135/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Качугский-->
+    <bean id="14" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.59.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Киренский-->
+    <bean id="15" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.61.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Кировский-->
+    <bean id="16" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.63.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Куйбышевский-->
+    <bean id="17" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.31.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Куйтунский-->
+    <bean id="18" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.67.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Ленинский-->
+    <bean id="19" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.68.34/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Мамско-Чуйский-->
+    <bean id="20" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.71.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Нижнеудинский-->
+    <bean id="23" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.77.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Октябрьский-->
+    <bean id="25" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.81.133/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Свердловский-->
+    <bean id="30" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.91.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Тайшетский-->
+    <bean id="32" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.95.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Шелеховский-->
+    <bean id="40" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.111.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+    <!--Эхирит-Булагатский-->
+    <bean id="41" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.113.131/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="username" value="sysdba"/>
+        <property name="password" value="aissp038"/>
+    </bean>
+
+
+
+    <!--<bean id="testDao.dataSource" class="fssp38.sberbank.dao.TestDaoImp">-->
+        <!--<property name="dataSource" ref="Октябрьский"/>-->
+    <!--</bean>-->
+
+</beans>

@@ -28,13 +28,13 @@ public class SberbankRequestService {
     DataSource dataSource;
     JdbcTemplate jdbcTemplate;
     String depCode;
-    Hashtable<String, String> parameters;
+    Map<String, String> parameters;
     Hashtable<String, SberbankXmlWriter> xmlWriters;
 
     String where;
 
 
-    public SberbankRequestService(DataSource dataSource, Hashtable<String, String> parameters) throws FlowException {
+    public SberbankRequestService(DataSource dataSource, Map<String, String> parameters) throws FlowException {
         this.dataSource = dataSource;
         this.parameters = parameters;
 

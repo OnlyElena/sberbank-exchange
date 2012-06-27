@@ -25,7 +25,7 @@ public class ActGAccountMoneyDAO {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public List<ActGAccountMoney> getAll() {
+    public List<ActGAccountMoney> getAll(Long lastId) {
         String sql = " select" +
                 " d.barcode, " + /*BAR_CODE*/
                 " d.id, " + /*PK Документа*/
@@ -65,7 +65,7 @@ public class ActGAccountMoneyDAO {
                 " where" +
                 "    d.docstatusid = 2 and " +
                 " doc_number is not null and" +
-                " did.id_dbtr_entid in (2,71,95,96,97)";
+                " did.id_dbtr_entid in (2,71,95,96,97) and d.id > " + lastId + "order by d.id";
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         //кажется это вредно, все грузить в память?! записей может быть много
