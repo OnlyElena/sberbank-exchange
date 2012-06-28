@@ -14,6 +14,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import javax.sql.DataSource;
 import java.io.*;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -68,8 +69,7 @@ public class ImportResponse {
                 try {
                     responceService.process(responses, territory, depCode);
                 } catch (FlowException e) {
-                    e.printStackTrace();
-                    System.exit(-1);
+                    System.err.println(new Date() + " " + e.getMessage());
                 }
             }
 

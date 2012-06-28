@@ -33,6 +33,7 @@ public class ResponceService {
     }
 
     public void process(List<SberbankResponse> responses, String territory, String depCode) throws FlowException {
+        System.out.print("*");
         Long genid = getNextSeqDocumentId();
 //        String genuuid = getNextUUID();
         String genuuid = UUID.randomUUID().toString();
@@ -69,7 +70,7 @@ public class ResponceService {
                         " AND MVV_AGENT_CODE = '" + agent_code + "'" +
                         " AND MVV_AGENT_DEPT_CODE = '" + agent_dept_code + "'";
 
-        System.out.println("query: " + query);
+//        System.out.println("query: " + query);
 
         JdbcTemplate jdbcTemplate = null;
         Map<String, Object> map = null;
@@ -111,7 +112,7 @@ public class ResponceService {
                 "''" +
                 ")";
 
-        System.out.println("query1: " + query1);
+//        System.out.println("query1: " + query1);
 
         jdbcTemplate.execute(query1);
 
@@ -150,7 +151,7 @@ public class ResponceService {
                 "'" + result_str + "'" +
                 ")";
 
-        System.out.println("query2: " + query2);
+//        System.out.println("query2: " + query2);
         jdbcTemplate.execute(query2);
 
         for (SberbankResponse response : responses) {

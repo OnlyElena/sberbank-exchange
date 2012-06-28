@@ -257,6 +257,23 @@ public class ActGAccountMoney {
     }
 
     public void setDebtorAddres(String debtorAddres) {
+        if (debtorAddres != null && debtorAddres.length() > 100) {
+            debtorAddres = debtorAddres.replace(", ,", ",");
+            debtorAddres = debtorAddres.replaceAll(", ", ",");
+            debtorAddres = debtorAddres.replace(",с. ", ",с.");
+            debtorAddres = debtorAddres.replace(",ул. ", ",ул.");
+            debtorAddres = debtorAddres.replace(",д. ", ",д.");
+            debtorAddres = debtorAddres.replace(",кв. ", ",кв.");
+            debtorAddres = debtorAddres.replace(",п. ", ",п.");
+            debtorAddres = debtorAddres.replace("Иркутская обл.", "Ирк.обл.");
+            debtorAddres = debtorAddres.replace("Иркутская обл", "Ирк.обл.");
+            debtorAddres = debtorAddres.replace("Иркутский р-он.", "Ирк. р-он");
+            debtorAddres = debtorAddres.replace("Россия,округ.", "");
+            debtorAddres = debtorAddres.replace("Садоводство", "Сад-во");
+//            if (debtorAddres.length() > 100) {
+//                System.out.println(debtorAddres.length() + "\tADDRESS: " + debtorAddres);
+//            }
+        }
         this.debtorAddres = debtorAddres;
     }
 

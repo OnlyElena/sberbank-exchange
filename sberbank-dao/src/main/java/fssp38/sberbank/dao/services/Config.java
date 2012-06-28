@@ -116,7 +116,7 @@ public class Config {
                 }
 
                 out.close();
-                System.out.println("Write file: " + new File(file).getAbsolutePath());
+//                System.out.println("Write file: " + new File(file).getAbsolutePath());
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
