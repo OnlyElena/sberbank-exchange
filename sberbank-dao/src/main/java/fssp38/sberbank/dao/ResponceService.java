@@ -76,9 +76,13 @@ public class ResponceService {
         Map<String, Object> map = null;
 
         try {
-            jdbcTemplate = new JdbcTemplate(dataSource);
-            ColumnMapRowMapper rowMapper = new ColumnMapRowMapper();
-            map = jdbcTemplate.queryForObject(query, rowMapper);
+                jdbcTemplate = new JdbcTemplate(dataSource);
+                ColumnMapRowMapper rowMapper = new ColumnMapRowMapper();
+                map = jdbcTemplate.queryForObject(query, rowMapper);
+//                  не помню чтоб еще что то правили.?
+            if (map.get("DBTR_BORN_YEAR") == null) {
+                map.put("DBTR_BORN_YEAR", "0000");
+            }
 //            for (String s : map.keySet()) {
 //                System.out.println(s + "\t" + map.get(s));
 //            }
