@@ -2,10 +2,14 @@ package fssp38.sberbank.dao.notif1;
 
 import fssp38.sberbank.dao.SberCodeConv;
 import fssp38.sberbank.dao.services.Config;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: Andrey V. Panov
@@ -19,6 +23,8 @@ public class Main {
 
     public Main() {
         String inputDir = Config.getProperties().get(Config.INPUT_DIRECTORY);
+
+
 
 
         File[] files = new File(inputDir).listFiles(new FilenameFilter() {

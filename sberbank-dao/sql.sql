@@ -1,4 +1,4 @@
-create or alter procedure uvedom(doc_id D_ID) -- аргумент это id постановления
+ create or alter procedure uvedom(doc_id D_ID) -- аргумент это id постановления
 as
     -- описываем переменные используемые в процедуре
     -- для хранения id для таблицы ext_input_header
@@ -13,6 +13,8 @@ as
     declare id_dbtr_inn type of D_INN;
     declare id_dbtr_born type of D_DATE;
     declare dbtr_born_year type of D_BIRTHYEAR;
+    declare restriction_int_key type of D_ID;
+    declare source_barcode type of D_BARCODE;
 begin
 -- генерируем новый id
 SELECT NEXT VALUE FOR SEQ_DOCUMENT FROM RDB$DATABASE into new_id;
@@ -22,6 +24,8 @@ SELECT GEN_UUID() FROM RDB$DATABASE into uuid;
 select ip_id from O_IP where id = :doc_id into ip_id;
 -- генерим новый id для ext_information
 select next value for ext_information from rdb$database into ext_info_id;
+select id from sendlist where sendlist_o_id = :doc_id and sendlist_contr_type containing 'Банк' into restriction_int_key;
+select barcode from document where id = :doc_id into source_barcode;
 -- вставляем запись в ext_input_header
 INSERT INTO EXT_INPUT_HEADER
 (
@@ -59,7 +63,7 @@ insert into EXT_REPORT
 ) values (
     :new_id,
     :ip_id,
-    :doc_id,
+    :restriction_int_key,
     cast('NOW' as date),
     3,  --2 — Указанное в постановлении имущество отсутствует
         --3 — Постановление исполнено в полном объеме
@@ -69,55 +73,6 @@ insert into EXT_REPORT
         --7 — Постановление не исполнено в связи с отсутствием в банке должника
     'Исполнено в полном объеме'
 );
--- пихаем в ext_information и в ext_availability_acc_data
--- только я не совсем понял для чего это
--- в уведомлении на 3 закладке они будут отображаться
--- но какой в этом смысл, я не совсем понимаю
--- ведь это всего лишь уведомление о том принято постановление или не принято
--- вероятно нам это даже не понадобится
--- да и кстати этот же код используется
-insert into ext_information (
-    id,
-    act_date,
-    kind_data_type,
-    entity_name,
-    external_key,
-    entity_birthdate,
-    entity_birthyear,
-    proceed,
-    document_key,
-    entity_inn
-) values (
-    :ext_info_id,
-    cast('now' as date), -- дата ответа
-    09, -- тип ответа, видимо указатель на то в какой таблице сведения 09 - для EXT_AVAILABILITY_ACC_DATA
-    :id_dbtr_name -- имя должника надо
-    :uuid,  -- связь с EXT_INPUT_HEADER
-    :id_dbtr_born, -- дата рождения должника
-    :dbtr_born_year, -- год рождения
-    0, -- флаг обработки
-    :uuid, -- связь с EXT_INPUT_HEADER
-    :id_dbtr_inn -- ИНН должника
-);
-insert into EXT_AVAILABILITY_ACC_DATA (
-    ID,
-    BIC_BANK,
-    CURRENCY_CODE,
-    ACC,
-    BANK_NAME,
-    SUMMA,
-    DEPT_CODE,
-    SUMMA_INFO
-) VALUES (
-    :extinfoid,
-    :bic,
-    :cur_info,
-    :accnum,
-    :bank_name,
-    :summa,
-    :dept_code,
-    :summ_info
-);
 end;
-execute procedure uvedom(81231011501438);
+execute procedure uvedom(81231011501433);
 drop procedure uvedom;
