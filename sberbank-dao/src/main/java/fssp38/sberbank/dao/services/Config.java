@@ -12,6 +12,8 @@ import java.util.LinkedHashMap;
  */
 public class Config {
 
+    public static final String INPUT_DIRECTORY = "INPUT_DIRECTORY";
+
     public static void main(String[] args) {
         LinkedHashMap<String, String> properties = getProperties();
 

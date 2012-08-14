@@ -123,18 +123,6 @@ public class ImportResponse {
 
     private Map<String, String> getProperties() {
         return Config.getProperties();
-
-//        Hashtable<String, String> properties;
-//        properties = new Hashtable<String, String>();
-//        properties.put("MVV_AGENT_CODE", "СБЕРБАНК");
-//        properties.put("MVV_AGENT_DEPT_CODE", "СБЕРБАНКИРК");
-//        properties.put("MVV_AGREEMENT_CODE", "СБЕРБАНКСОГЛ");
-////        properties.put("DEP_CODE", "25");
-//        properties.put("TERRITORY", "25");
-//        properties.put("OUTPUT_DIRECTORY", "/home/aware/Downloads/sberbank_request/");
-//        properties.put("INPUT_DIRECTORY", "/home/aware/Downloads/sberbank_report/");
-//
-//        return properties;
     }
 
     private Map<String, DataSource> getDataSources(String configFile) {
