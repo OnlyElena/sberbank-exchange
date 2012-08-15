@@ -26,6 +26,7 @@ public class SberCodeConv {
 
         //Бодайбинский>
         registerCode("05", "05");
+        registerCode("05", "06");
 
         //Боханский>
         registerCode("06", "03");
@@ -76,7 +77,7 @@ public class SberCodeConv {
         registerCode("21", "21");
 
         //Нижнеилимский >
-        registerCode("22", "");
+        registerCode("22", "22");
 
         //Нижнеудинский>
         registerCode("23", "23");
@@ -112,13 +113,14 @@ public class SberCodeConv {
         registerCode("33", "33");
 
         //Тулунский>
-        registerCode("34", "");
+        registerCode("34", "35");
 
         //Усть-Илимский>
         registerCode("35", "34");
 
         //Усть-Кутский>
-        registerCode("36", "35");
+//        registerCode("36", "35");
+        registerCode("36", "36");
 
         //Усть-Удинский>
         registerCode("37", "37");
@@ -139,8 +141,8 @@ public class SberCodeConv {
 
     public static String getDepCode(String sberCode) {
         String s = sber2real.get(sberCode);
-        if (s.equals("")) {
-            throw new RuntimeException("Код Сбербканка не сопоставлен коду отдела");
+        if (s == null || s.equals("")) {
+            throw new RuntimeException("Код Сбербканка "+sberCode+ " не сопоставлен коду отдела");
         }
         
         return s;

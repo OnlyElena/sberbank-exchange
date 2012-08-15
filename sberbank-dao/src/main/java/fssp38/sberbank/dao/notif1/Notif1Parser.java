@@ -38,12 +38,14 @@ public class Notif1Parser {
 
         } catch (FileNotFoundException e) {
             System.err.println(new Date() + " File not found: " + file.getAbsolutePath());
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.err.println(new Date() + " " + e.getMessage());
         }
     }
 
     private Notif1Bean parseLine(String line) {
+        if (!line.startsWith("| ")) return null;
+
         Notif1Bean bean = new Notif1Bean();
 
         //первый разделитель пропускаем, он лишний

@@ -74,5 +74,5 @@ insert into EXT_REPORT
     'Исполнено в полном объеме'
 );
 end;
-execute procedure uvedom(81231011501433);
+execute procedure uvedom(25111001805064);
 drop procedure uvedom;
