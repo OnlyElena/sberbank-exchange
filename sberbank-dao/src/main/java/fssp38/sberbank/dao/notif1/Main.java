@@ -4,6 +4,7 @@ import fssp38.sberbank.dao.SberCodeConv;
 import fssp38.sberbank.dao.services.Config;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
@@ -122,6 +123,14 @@ public class Main {
         //берем код отдела из id постановления
         String depCode = notificationId.substring(2, 4);
         JdbcTemplate jdbcTemplate = getDatabaseConnection(depCode);
+
+        try {
+            jdbcTemplate.execute("select * from OSP");
+        } catch (Exception e) {
+            System.err.println("Ошибка подключения: " + e.getMessage());
+            return false;
+        }
+
         if (jdbcTemplate == null) return false;
 
         if (!notification.getProcNumberState().equals("Принят к исполнению – постановление передано на обработку")) {
