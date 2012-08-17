@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +81,7 @@ public class Main {
         HashMap<String, String> map = new HashMap<String, String>();
 
         for (File file : files) {
+            boolean deleteFile = true;
 
             Notif1Parser parser = new Notif1Parser(file);
             List<Notif1Bean> res = parser.getRes();
@@ -91,7 +93,15 @@ public class Main {
                     System.out.println(notification.toString());
                 }
 
-                processNotification(notification);
+                boolean b = processNotification(notification);
+                //если хоть одна строка не обработалась, файл не удаляем
+                if (!b) deleteFile = false;
+
+            }
+
+            if (deleteFile) {
+                file.delete();
+                System.out.println(new Date() + " Файл обработан и удален: " + file.getAbsolutePath());
             }
 
         }
@@ -105,28 +115,34 @@ public class Main {
      *
      * @param notification
      */
-    private void processNotification(Notif1Bean notification) {
+    private boolean processNotification(Notif1Bean notification) {
         String notificationId = notification.getId();
-        if (notificationId == null) return;
+        if (notificationId == null) return false;
 
         //берем код отдела из id постановления
         String depCode = notificationId.substring(2, 4);
         JdbcTemplate jdbcTemplate = getDatabaseConnection(depCode);
-        if (jdbcTemplate == null) return;
+        if (jdbcTemplate == null) return false;
 
         if (!notification.getProcNumberState().equals("Принят к исполнению – постановление передано на обработку")) {
             //уведомление отрицательно, меняем статус постановления на отрицательный 
 
             //пишем в интерфейсные таблицы
-            SqlNotif1 sql1 = new SqlNotif1(jdbcTemplate, Long.parseLong(notification.getId()), notification);
-            System.out.println("Отмена постановления: " + notification.toString());
+            try {
+                SqlNotif1 sql1 = new SqlNotif1(jdbcTemplate, Long.parseLong(notification.getId()), notification);
+            } catch (Exception e) {
+                System.err.println("Ошибка отмены постановления: " + notification.toString());
+                System.err.println("\t" + e.getMessage());
+            }
+//            System.out.println("Отмена постановления: " + notification.toString());
         }
 
         //делаем запись о уведомлении в ответах на запрос
         SqlNotif11 sqlNotif11 = new SqlNotif11(jdbcTemplate, Long.parseLong(notification.getId()), notification);
 
-        System.out.println("Сделана запись в исполнительном производстве: " + notification.getExecProcNumber());
+//        System.out.println("Сделана запись в исполнительном производстве: " + notification.getExecProcNumber());
 
+        return true;
     }
 
     private JdbcTemplate getDatabaseConnection(String depCode) {

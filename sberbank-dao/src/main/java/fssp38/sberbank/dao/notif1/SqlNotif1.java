@@ -81,7 +81,7 @@ public class SqlNotif1 {
         Object[] parameters = new Object[]{doc_id};
         String bar_code = jdbcTemplate.queryForObject("select barcode from DOCUMENT where id = ?", parameters, String.class);
 
-        Long restriction_int_key = jdbcTemplate.queryForLong("select id from sendlist where sendlist_o_id = " + doc_id + " and sendlist_contr_type containing 'Банк'");
+        Long restriction_int_key = jdbcTemplate.queryForLong("select FIRST 1 id from sendlist where sendlist_o_id = " + doc_id + " and sendlist_contr_type containing 'Банк'");
 
         String uuid = UUID.randomUUID().toString();
 
