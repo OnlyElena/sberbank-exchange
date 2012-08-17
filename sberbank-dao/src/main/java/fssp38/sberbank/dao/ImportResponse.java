@@ -57,6 +57,8 @@ public class ImportResponse {
                 continue;
             }
 
+
+
             Hashtable<String, List<SberbankResponse>> sberbankResponses = getSberbankResponses(file);
 
             //ответов нет, идем дальше по файлам
@@ -68,13 +70,14 @@ public class ImportResponse {
             for (List<SberbankResponse> responses : sberbankResponses.values()) {
                 try {
                     responceService.process(responses, territory, depCode);
-                } catch (FlowException e) {
+
+                    System.out.println("Удаляем файл: " + file.getAbsolutePath());
+                    file.delete();
+
+                } catch (Exception e) {
                     System.err.println(new Date() + " " + e.getMessage());
                 }
             }
-
-            System.out.println("Удаляем файл: " + file.getAbsolutePath());
-            file.delete();
         }
     }
 
