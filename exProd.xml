@@ -267,7 +267,7 @@
         <property name="password" value="aissp038"/>
     </bean>
 
-    <!--Тулунский-->
+    <!--Усолье-Сибирское-->
     <bean id="34" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
         <property name="url" value="jdbc:firebirdsql:10.38.103.133/3052:ncore-fssp?lc_ctype=WIN1251"/>
