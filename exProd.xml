@@ -46,7 +46,7 @@
     <!--Боханский-->
     <bean id="06" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
-        <property name="url" value="jdbc:firebirdsql:10.38.41.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.43.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
         <property name="username" value="sysdba"/>
         <property name="password" value="aissp038"/>
     </bean>
@@ -278,7 +278,7 @@
     <!--Усть-Илимский-->
     <bean id="35" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
-        <property name="url" value="jdbc:firebirdsql:10.38.103.133/3052:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.99.241/3052:ncore-fssp?lc_ctype=WIN1251"/>
         <property name="username" value="sysdba"/>
         <property name="password" value="aissp038"/>
     </bean>
