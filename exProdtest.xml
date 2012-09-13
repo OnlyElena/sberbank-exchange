@@ -5,10 +5,10 @@
 
 
 
-    <!--Иркутский-->
-    <bean id="11" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+    <!--Тулунский-->
+    <bean id="33" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName" value="org.firebirdsql.jdbc.FBDriver"/>
-        <property name="url" value="jdbc:firebirdsql:127.0.0.1/3050:ncore-fssp?lc_ctype=WIN1251"/>
+        <property name="url" value="jdbc:firebirdsql:10.38.97.130/3052:ncore-fssp?lc_ctype=WIN1251"/>
         <property name="username" value="sysdba"/>
         <property name="password" value="aissp038"/>
     </bean>

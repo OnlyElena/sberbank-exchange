@@ -40,7 +40,8 @@ public class ActGAccountMoneyDAO {
                 "    o_ip.id_court_name, " + /*--наименование органа выдавшего ИД*/
                 "    o_ip.id_court_adr, " + /*--адрес органа выдавшего ИД*/
                 "    o_ip.ip_exec_prist_name, " + /*--ФИО СПИ*/
-                "    o_ip.ip_rest_debtsum, " + /*--остаток долга по ИП*/
+//                "    o_ip.ip_rest_debtsum, " + /*--остаток долга по ИП*/
+                "    arr.total_dept_sum," +/*-- общая сумма задолженности по постановлению об обращении на ДС */
 //                "    did.id_crdr_entid, " + /*--признак взыскателя, заявителя (ТИП??)*/
                 "    o_ip.id_crdr_name," +
                 "    o_ip.id_crdr_adr," +
@@ -87,7 +88,8 @@ public class ActGAccountMoneyDAO {
                 act.setExecActInitial(rs.getString("id_court_name"));
                 act.setExecActInitialAddr(rs.getString("id_court_adr"));
                 act.setBailiff(rs.getString("ip_exec_prist_name"));
-                act.setSumm(rs.getString("ip_rest_debtsum"));
+//                act.setSumm(rs.getString("ip_rest_debtsum"));
+                act.setSumm(rs.getString("total_dept_sum"));
                 act.setCreditorName(rs.getString("id_crdr_name"));
                 act.setCreditorAddress(rs.getString("id_crdr_adr"));
                 act.setAccountNumber(rs.getString("cntlist_cnt"));
