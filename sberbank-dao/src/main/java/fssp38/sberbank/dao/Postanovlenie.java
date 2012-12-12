@@ -1,14 +1,12 @@
 package fssp38.sberbank.dao;
 
-import fssp38.sberbank.dao.beans.ActGAccountMoney;
-import fssp38.sberbank.dao.beans.OSP;
-import fssp38.sberbank.dao.beans.SberbankResponse;
-import fssp38.sberbank.dao.dao.ActGAccountMoneyDAO;
-import fssp38.sberbank.dao.dao.OspDAO;
-import fssp38.sberbank.dao.dao.SberbankMvvDAO;
+import fssp38.sberbank.dao.beans.*;
+import fssp38.sberbank.dao.dao.*;
 import fssp38.sberbank.dao.services.Config;
+import fssp38.sberbank.dao.services.ConfigAr;
+import fssp38.sberbank.dao.services.ConfigRol;
+import fssp38.sberbank.dao.services.ConfigSnAr;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import javax.sql.DataSource;
@@ -61,7 +59,8 @@ public class Postanovlenie implements Runnable {
         long start = System.currentTimeMillis();
         System.out.println("start dep " + depCode);
         try {
-            sql1(depCode, dataSource);
+//            sql1(depCode, dataSource);
+            sql2(depCode, dataSource);
         } catch (IOException e) {
             System.err.println("Department: " + e.getMessage());
         }
@@ -70,14 +69,65 @@ public class Postanovlenie implements Runnable {
         System.out.println("отдел " + depCode + ", время выполнения " + l + " мин, " + new Date());
     }
 
-    private void sql1(String depCode, DataSource dataSource) throws IOException {
+////    постановление об обращении на ДС
+//    private void sql1(String depCode, DataSource dataSource) throws IOException {
+//
+//        String nextSberbankFileName = getNextSberbankFileName(1, depCode);
+//        String directory = Config.getProperties().get("OUTPUT_DIRECTORY");
+//
+//        OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(directory + nextSberbankFileName), Charset.forName("UTF-8"));
+//
+//        ActGAccountMoneyDAO actGAccountMoneyDAO = new ActGAccountMoneyDAO(dataSource);
+//        OspDAO ospDAO = new OspDAO(dataSource);
+//        SberbankMvvDAO sberbankMvvDAO = new SberbankMvvDAO(dataSource);
+//
+//        OSP osp = ospDAO.getOsp();
+//
+//
+//        Long lastId = Config.getLastId(depCode);
+//        List<ActGAccountMoney> actGAccountMoneyList = actGAccountMoneyDAO.getAll(lastId);
+//
+//        for (ActGAccountMoney gAccountMoney : actGAccountMoneyList) {
+//            SberbankResponse accountInfo = sberbankMvvDAO.getAccountInfo(gAccountMoney.getAccountNumber());
+//            if (accountInfo == null) {
+////                System.err.println("Не найден ответ по счету: " + gAccountMoney.getAccountNumber());
+//                continue;
+//            }
+//
+////            System.out.println(gAccountMoney.toString());
+//            out.write(gAccountMoney.toString());
+//
+//            out.write(" ");
+//            out.write(osp.toString());
+//
+//            out.write(" ");
+//            out.write(accountInfo.toStringSber());
+//
+//            out.write("\n");
+//
+//            //хотя он всегда должен возрастать?!
+//            if (gAccountMoney.getId() > lastId) lastId = gAccountMoney.getId();
+//        }
+//
+//        out.flush();
+//        out.close();
+//        System.out.println("Write file: " + directory + nextSberbankFileName);
+//
+//        Config.setLastId(depCode, lastId);
+//    }
 
+
+//    постановления об обращении на ДС, об отмене обращения на ДС, о наложении,снятии ареста на ДС
+    private void sql2(String depCode, DataSource dataSource) throws IOException {
         String nextSberbankFileName = getNextSberbankFileName(1, depCode);
         String directory = Config.getProperties().get("OUTPUT_DIRECTORY");
 
         OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(directory + nextSberbankFileName), Charset.forName("UTF-8"));
 
         ActGAccountMoneyDAO actGAccountMoneyDAO = new ActGAccountMoneyDAO(dataSource);
+        PosRolAccountMoneyDAO posRolAccountMoneyDAO = new PosRolAccountMoneyDAO(dataSource);
+        PosArrestMoneyDAO posArrestMoneyDAO = new PosArrestMoneyDAO(dataSource);
+        PosSnArrestMoneyDAO posSnArrestMoneyDAO = new PosSnArrestMoneyDAO(dataSource);
         OspDAO ospDAO = new OspDAO(dataSource);
         SberbankMvvDAO sberbankMvvDAO = new SberbankMvvDAO(dataSource);
 
@@ -87,8 +137,16 @@ public class Postanovlenie implements Runnable {
         Long lastId = Config.getLastId(depCode);
         List<ActGAccountMoney> actGAccountMoneyList = actGAccountMoneyDAO.getAll(lastId);
 
+//        Long lastIdAr = ConfigAr.getLastId(depCode);
+//        List<PosArrestMoney> posArrestMoneyList = posArrestMoneyDAO.getAll(lastId);
+//
+//        Long lastIdSnAr = ConfigSnAr.getLastId(depCode);
+//        List<PosSnArrestMoney> posSnArrestMoneyList = posSnArrestMoneyDAO.getAll(lastId);
+
         for (ActGAccountMoney gAccountMoney : actGAccountMoneyList) {
             SberbankResponse accountInfo = sberbankMvvDAO.getAccountInfo(gAccountMoney.getAccountNumber());
+//            System.out.println("+++++++++++++++++++++++"+accountInfo);
+//            System.out.println("---------"+gAccountMoney.getAccountNumber());
             if (accountInfo == null) {
 //                System.err.println("Не найден ответ по счету: " + gAccountMoney.getAccountNumber());
                 continue;
@@ -96,7 +154,7 @@ public class Postanovlenie implements Runnable {
 
 //            System.out.println(gAccountMoney.toString());
             out.write(gAccountMoney.toString());
-
+            System.out.println(gAccountMoney.toString());
             out.write(" ");
             out.write(osp.toString());
 
@@ -109,11 +167,104 @@ public class Postanovlenie implements Runnable {
             if (gAccountMoney.getId() > lastId) lastId = gAccountMoney.getId();
         }
 
+        System.out.println("пост об обращении");
+
+
+        Long lastIdRol = ConfigRol.getLastId(depCode);
+        List<PosRolAccountMoney> posRolAccountMoneyList = posRolAccountMoneyDAO.getAll(lastIdRol);
+
+        for (PosRolAccountMoney gPosRolAccountMoney : posRolAccountMoneyList){
+//            SberbankResponse accountInfo = sberbankMvvDAO.getAccountInfo(gPosSnArrestMoney.getAccountNumber());
+            SberbankResponse prolaccountInfo = sberbankMvvDAO.getAccountInfo(gPosRolAccountMoney.getAccountNumber());
+            if (prolaccountInfo == null) {
+//                System.err.println("Не найден ответ по счету: " + gAccountMoney.getAccountNumber());
+                continue;
+            }
+            out.write(gPosRolAccountMoney.toString());
+
+            out.write(" ");
+            out.write(osp.toString());
+
+            out.write(" ");
+            out.write(prolaccountInfo.toStringSber());
+
+            out.write("\n");
+
+//            хотя он всегда должен возврастать?!
+            if (gPosRolAccountMoney.getId() > lastIdRol) lastIdRol = gPosRolAccountMoney.getId();
+
+
+        }
+
+        System.out.println("постановление об отмене пост. об обращении на ДС");
+
+
+
+
+        Long lastIdAr = ConfigAr.getLastId(depCode);
+        List<PosArrestMoney> posArrestMoneyList = posArrestMoneyDAO.getAll(lastIdAr);
+
+        for (PosArrestMoney gPosArrestMoney : posArrestMoneyList){
+//            SberbankResponse accountInfo = sberbankMvvDAO.getAccountInfo(gPosSnArrestMoney.getAccountNumber());
+            SberbankResponse paccountInfo = sberbankMvvDAO.getAccountInfo(gPosArrestMoney.getAccountNumber());
+            if (paccountInfo == null) {
+//                System.err.println("Не найден ответ по счету: " + gAccountMoney.getAccountNumber());
+                continue;
+            }
+            out.write(gPosArrestMoney.toString());
+
+            out.write(" ");
+            out.write(osp.toString());
+
+            out.write(" ");
+            out.write(paccountInfo.toStringSber());
+
+            out.write("\n");
+
+//            хотя он всегда должен возврастать?!
+            if (gPosArrestMoney.getId() > lastIdAr) lastIdAr = gPosArrestMoney.getId();
+
+
+        }
+
+        System.out.println("постановление о аресте");
+
+        Long lastIdSnAr = ConfigSnAr.getLastId(depCode);
+        List<PosSnArrestMoney> posSnArrestMoneyList = posSnArrestMoneyDAO.getAll(lastIdSnAr);
+
+        for (PosSnArrestMoney gPosSnArrestMoney : posSnArrestMoneyList) {
+            SberbankResponse accountInfo = sberbankMvvDAO.getAccountInfo(gPosSnArrestMoney.getAccountNumber());
+            if (accountInfo == null) {
+//                System.err.println("Не найден ответ по счету: " + gAccountMoney.getAccountNumber());
+                continue;
+            }
+
+//            System.out.println(gAccountMoney.toString());
+            out.write(gPosSnArrestMoney.toString());
+
+            out.write(" ");
+            out.write(osp.toString());
+
+            out.write(" ");
+            out.write(accountInfo.toStringSber());
+
+            out.write("\n");
+
+            //хотя он всегда должен возрастать?!
+            if (gPosSnArrestMoney.getId() > lastIdSnAr) lastIdSnAr = gPosSnArrestMoney.getId();
+        }
+        System.out.println("постановление о снятии ареста");
+
+
         out.flush();
         out.close();
         System.out.println("Write file: " + directory + nextSberbankFileName);
 
+
         Config.setLastId(depCode, lastId);
+        ConfigRol.setLastId(depCode,lastIdRol);
+        ConfigAr.setLastId(depCode, lastIdAr);
+        ConfigSnAr.setLastId(depCode, lastIdSnAr);
     }
 
     /**

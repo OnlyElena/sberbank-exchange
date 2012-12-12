@@ -100,11 +100,10 @@ public class ActGAccountMoneyDAO {
                 act.setDebtorAddres(rs.getString("id_dbtr_adr"));
                 act.setDebtorBirthYear(rs.getString("dbtr_born_year"));
                 act.setDebtorBirth(getDateDDMMYYYY(rs.getDate("id_dbtr_born")));
-
                 return act;
             }
         });
-
+        System.out.println(actGAccountMoneyList);
         return actGAccountMoneyList;
     }
 }

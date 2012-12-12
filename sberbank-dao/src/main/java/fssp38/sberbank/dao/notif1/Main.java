@@ -70,8 +70,18 @@ public class Main {
             @Override
             public boolean accept(File file, String s) {
                 /*u3802068.1ss*/
-                return s.matches("^u38[0-9]{5}.[0-9]ss");
-            }
+//                if (s.toString().contains("a"))  {
+//                    return s.matches("^u38[0-9]{4}[0-9a-c]{1}.[0-9]ss"); }
+//                if(s.toString().contains("b")){
+//                    return s.matches("^u38[0-9]{4}[a-c]{1}.[0-9]ss"); }
+//                if(s.toString().contains("c")){
+//                    return s.matches("^u38[0-9]{4}[a-c]{1}.[0-9]ss"); }
+//                else
+                System.out.println(s);
+//                return s.matches("^u38[0-9]{5}.[0-9]ss");
+                return s.matches("^u38[0-9]{4}[0-9a-c]{1}.[0-9]ss");
+
+        }
         });
 
         if (files == null) {
