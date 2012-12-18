@@ -27,7 +27,7 @@ public class PosRolAccountMoneyDAO {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public List<PosRolAccountMoney> getAll(Long lastIdSnAr) {
+    public List<PosRolAccountMoney> getAll(Long lastIdRolAcM) {
         String sql4 =
                 "select\n" +
                         "d.barcode,  /*BAR_CODE*/\n" +
@@ -78,9 +78,7 @@ public class PosRolAccountMoneyDAO {
                         "from  entity\n" +
                         "where  entity.entt_typeid = 8\n" +
                         " ))\n" +
-                        "and d.id >'25111000003896' order by d.id    /* 25111000003896  25111000028137   25111002017360  */";
-
-
+                        "and d.id >"+lastIdRolAcM+ "order by d.id    /* 25111000003896  25111000028137   25111002017360  */";
 
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
