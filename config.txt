@@ -1,0 +1,6 @@
+MVV_AGENT_CODE=СБЕРБАНК
+MVV_AGENT_DEPT_CODE=СБЕРБАНКИРК
+MVV_AGREEMENT_CODE=СБЕРБАНКСОГЛ
+TERRITORY=25
+OUTPUT_DIRECTORY=/home/sberbank/request/
+INPUT_DIRECTORY=/home/sberbank/respons/
